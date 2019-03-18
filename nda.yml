@@ -1,0 +1,117 @@
+metadata:
+  title: Two way NDA
+  example start: 4
+  documentation: "https://docassemble.org/docs/fields.html#fields"
+---
+objects:
+- party1: Person
+- party2: Person
+---
+modules:
+  - docassemble.base.util
+---
+mandatory: True
+question: |
+  Your document is ready.
+subquestion: |
+  Thank you for using this interview.
+attachments:
+  - name: Mutual NDA
+    filename: Mutual_NDA
+    docx template file: Precedent_Template_Mutual_NDA.docx
+    fields:
+    - party1name: ${ party1 }
+    - party2name: ${ party2 }
+    - party1address: ${ party1address }
+    - party2address: ${ party2address }
+    - party1addresstype: ${ party1.addresstype }
+    - party2addresstype: ${ party2.addresstype }
+    - party1fulldescription: ${ party1.fulldescription }
+    - party2fulldescription: ${ party2.fulldescription }
+    - effectivedate: ${ effectivedate }
+    - purpose: ${ purpose }
+---
+question: Tell me more about the two parties
+fields:
+  - note: |
+      #### Party 1
+
+      Tell me about the first party
+  - Name: party1.name.text
+  - Type of person: party1.type
+    datatype: radio
+    choices:
+     - individual: an individual
+     - company: a company incorporated in England and Wales with company number
+     - partnership: a partnership incorporated in England and Wales with company number
+  - Company number: party1.companyno
+    hide if:
+      variable: party1.type
+      is: an individual
+
+####Party 2
+  - note: |
+      #### Party 2
+
+      Tell me about your the second party
+  - Name: party2.name.text
+  - Type of person: party2.type
+    datatype: radio
+    choices:
+     - individual: an individual
+     - company: a company incorporated in England and Wales with company number
+     - partnership: a partnership incorporated in England and Wales with company number
+  - Company number: party2.companyno
+    hide if:
+      variable: party2.type
+      is: an individual
+---
+code: |
+  if party1.type == 'an individual':
+    party1.category = 'an individual'
+    party1.addresstype = 'address'
+  else:
+    party1.category = 'legalperson'
+    party1.type = ' '.join([party1.type,party1.companyno])
+---
+code: |
+  if party2.type == 'an individual':
+    party2.category = 'an individual'
+    party2.addresstype = 'address'
+  else:
+    party2.category = 'legalperson'
+    party2.type = ' '.join([party2.type,party2.companyno])
+---
+question: Tell me more about ${ party1 }
+fields:
+
+  - Address type: party1.addresstype
+    datatype: radio
+    choices:
+      - registered office: registered office
+      - place of business: place of business
+    show if:
+      code: |
+        party1.category == 'legalperson'
+  - Address: party1address
+  - note: |
+      #### Tell me more about ${ party2 }
+  - Address Type: party2.addresstype
+    show if:
+      code: |
+        party2.category == 'legalperson'
+    datatype: radio
+    choices:
+      - registered office: registered office
+      - place of business: place of business
+  - Address: party2address
+---
+code: |
+  party1.fulldescription = ' '.join([party1.name.text,party1.type,'whose',party1.addresstype,'is',party1address])
+  party2.fulldescription = ' '.join([party2.name.text,party1.type,'whose',party2.addresstype,'is',party2address])
+---
+question: Tell me more about the purpose
+fields:
+  - Purpose: purpose
+  - Effective Date: effectivedate
+    datatype: date
