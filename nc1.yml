@@ -1,0 +1,152 @@
+metadata:
+  title: NC1 - New Client Form
+  example start: 4
+  documentation: "https://docassemble.org/docs/fields.html#fields"
+---
+modules:
+  - docassemble.base.util
+  - docassemble.base.core
+---
+mandatory: True
+question: |
+  Your document is ready.
+subquestion: |
+  Thank you for using this interview.
+attachments:
+  - name: NC1 New Client Form
+    filename: nc1
+    docx template file: nc1.docx
+---
+question: New Client
+fields:
+  - name: name
+  - address: address
+  - brief details of initial instructions: instructiondetails
+    datatype: area
+    
+  - note: |
+      #### Identity
+
+      You are required to identify the client
+  - Photo ID: idtype
+    datatype: radio
+    choices:
+     - current photo card driving licence
+     - signed passport
+     - national identity card
+     - residence permit with photograph
+  - Proof of address: address_type
+    datatype: checkboxes
+    js show if:
+        val("idtype") == "signed passport" || val("idtype") == "national identity card" || val("idtype") == "residence permit with photograph"
+    code: |
+      addressoptions
+    none of the above: False
+  - note: |
+      #### PEP Status
+      
+      PEP status enquiries must be made where appropriate.
+      
+      If the individual client or a family member or known close associate of the client is a PEP, enhanced CDD must be conducted. Please speak to COLP without delay in this case.
+  - PEP enquiries made: pep_enquiry 
+    datatype: radio
+    choices:
+      - Yes: yes
+      - No: no
+      - Not appropriate: not appropriate
+  - note: |
+      #### Risk assessment
+      
+      You must obtain information on the purpose and intended nature of our business relationship with the client.
+      
+      Please refer to the risk assessment form to inform your decision as to whether the risk is LOW or HIGH.
+  - Current risk assessment: risk_assessment
+    datatype: radio
+    choices:
+      - HIGH
+      - LOW
+  - List risk factors: risk_factors
+    datatype: area
+    required: False
+    show if:
+      variable: risk_assessment
+      is: HIGH
+  - Precautions taken / intended to mitigate risks identified: risk_precautions
+    datatype: area
+    required: False
+    show if:
+      variable: risk_assessment
+      is: HIGH
+  - note: |
+      #### Fee earners
+      
+  - Fee earner: fee_earner
+  - Partner: partner
+  
+---
+code: |
+  addressoptions = [
+                ['utility bill', 'recent utility or council tax bill', None, 'Non UK equivalent permitted.  Must be less than 3 months old and cannot be a mobile phone bill.'],
+                ['bank statement ', 'most recent bank or credit card statement ', None, 'must be relating to the previous month'],
+                ['local tax correspondence', 'local tax authority correspondence addressed to the stated address'],
+                ['local tax bill','a local authority tax bill, valid for the current year'],
+                ['telephone directory', 'entry in a local or national telephone directory confirming name and address'],
+                ['other document','other document',None,'see AML manual']
+              ]
+---
+code: |
+  if idtype == 'current photo card driving licence':
+    drivinglicence = 'YES'
+    passport_id = 'n/a'
+    residence_permit = 'n/a'
+  if idtype == 'signed passport':
+    drivinglicence = 'n/a'
+    passport_id = 'YES'
+    residence_permit = 'n/a'
+  if idtype == 'national identity card':
+    drivinglicence = 'n/a'
+    passport_id = 'YES'
+    residence_permit = 'n/a'
+  if idtype == 'residence permit with photograph':
+    drivinglicence = 'n/a'
+    passport_id = 'n/a'
+    residence_permit = 'YES'
+---
+code: |
+  if not idtype == 'current photo card driving licence':
+    if 'utility bill' in address_type:
+      utilitybill = 'YES'
+    else:
+      utilitybill = 'NO'
+    if 'bank statement' in address_type:
+      bankstatement = 'YES'
+    else:
+      bankstatement = 'NO'
+    if 'local tax correspondence' in address_type:
+      taxcorrespondence = 'YES'
+    else:
+      taxcorrespondence = 'NO'
+    if 'local tax bill' in address_type:
+      taxbill = 'YES'
+    else:
+      taxbill = 'NO'
+    if 'telephonedirectory' in address_type:
+      telephonedirectory = 'YES'
+    else:
+      telephonedirectory = 'NO'
+    if 'other document' in address_type:
+      otheraddress = 'YES'
+    else:
+      otheraddress = 'NO'
+  else:
+    utilitybill = 'n/a'
+    bankstatement = 'n/a'
+    taxcorrespondence = 'n/a'
+    taxbill = 'n/a'
+    telephonedirectory = 'n/a'
+    otheraddress = 'n/a'
+---
+code: |
+  if risk_assessment == 'LOW':
+    risk_factors = ''
+    risk_precautions = ''
