@@ -6,12 +6,8 @@
 # Useful links
 
 * [Temporary access point](https://klte.ch)
-* [Docassemble authoring guide](https://docassemble.org/docs/interviews.html)
-* [General markdown syntax](https://daringfireball.net/projects/markdown/)
-* [Docassemble markdown syntax](https://docassemble.org/docs/markup.html)
 * [Setting variables documentation](https://docassemble.org/docs/fields.html)
-* [Flightdeck}(https://www.kemplittle.com/flightdeck/)
-* 
+* [Flightdeck](https://www.kemplittle.com/flightdeck/)
 
 # Code
 
