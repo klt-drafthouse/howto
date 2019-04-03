@@ -181,3 +181,60 @@ mandatory: True
 
 ## [Commercial boilerplate](https://kl-mbl.imanagework.co.uk/work/link/d/KL_CLOUD!10124740.1)
 
+## Answer to IPR clause
+
+```
+metadata:
+  title: Radio buttons
+  documentation: "https://docassemble.org/docs/fields.html#field with choices"
+---
+question: |
+  Describe your software limits
+fields:
+  - Number of versions of the software: number_of_versions
+    datatype: integer
+  - Number of computer systems: number_of_computer_systems
+    input type: radio
+    choices:
+      - one: a single computer system
+      - more than one: more than one computer system
+  - Code type that the licensee can use: code_type
+    input type: radio
+    choices:
+      - source code
+      - object code
+  - Use that can be made of the software: uses
+    datatype: checkboxes
+    none of the above: False
+    choices:
+      - development
+      - testing
+      - disaster recovery      
+---
+code: |
+  if number_of_versions == 1:
+    version_syntax = 'version'
+  else:
+    version_syntax = 'versions'
+---
+
+question: IP Clause
+subquestion: |
+  7.	INTELLECTUAL PROPERTY RIGHTS
+  
+  7.1	Subject to any express provision in this Agreement to the contrary, each party acknowledges and agrees that this Agreement does not assign or transfer any Intellectual Property Rights between the parties and that nothing in this Agreement shall be deemed to give a party any right, title or interest whatsoever in the other party’s Intellectual Property Rights.
+  
+  7.2	The grant or licence of Intellectual Property Rights under this clause 7 are subject to 
+  (a)	the Customer’s compliance with the terms and conditions of this Agreement; and
+  (b)	receipt by Supplier of payment of the Licence Fees in full.
+
+  7.3	Supplier grants to the Customer a non-exclusive, non-transferable, non-sublicensable, personal licence to use the Software (in ${ code_type } form) for the Licence Purpose during the Licence Period, solely for its own internal business purposes, and not for the benefit of any third party, to:
+  (a)	at any one time, run and use ${ number_of_versions } ${ version_syntax } of the Software on ${ number_of_computer_systems }; and
+  (b)	for
+  % if uses.any_true():
+  ${ uses.true_values() } purposes only
+  % else:
+  no purposes at all
+  % endif
+  , run and use the Software.
+```
